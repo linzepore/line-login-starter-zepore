@@ -1,10 +1,17 @@
 server:
-    port: 9000
+    port: [port]
 
 management:
-    address: 127.0.0.1
-    port: 9100
+    address: [ip]
+    port: 39100
 
 logging:
     level:
         com.linecorp.sample: DEBUG
+
+linecorp:
+    platform:
+        channel:
+            channelId: xxx
+            channelSecret: xxx
+            callbackUrl: http://[ip]:[port]/auth

@@ -25,7 +25,7 @@
     <!-- https://github.com/spring-projects/spring-boot/blob/master/LICENSE.txt -->
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.7.RELEASE</version>
+    <version>2.5.0</version>
   </parent>
 
   <!-- ================================================================ -->
@@ -79,6 +79,13 @@
         <version>3.2.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>1.7.25</version>
+    </dependency>
+
+
   </dependencies>
 
   <!-- ================================================================ -->
@@ -91,7 +98,100 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+
+
+
+      <!-- 设置编译版本 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- 打包jar文件时，配置manifest文件，加入lib包的jar依赖 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <!-- 清单文件 -->
+            <manifest>
+              <mainClass>com.linecorp.sample.login.Application</mainClass>
+              <!-- 打包时 MANIFEST.MF文件不记录的时间戳版本 父工程开发版本需要加,不然依赖的父工程jar引用不了-->
+              <useUniqueVersions>false</useUniqueVersions>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
+            </manifest>
+            <!-- 给清单文件添加键值对(配置文件外置) -->
+            <manifestEntries>
+              <Class-Path>config/</Class-Path>
+            </manifestEntries>
+          </archive>
+          <classesDirectory>
+          </classesDirectory>
+        </configuration>
+      </plugin>
+      <!-- 拷贝依赖的jar包到lib目录 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>
+                ${project.build.directory}/lib
+              </outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- 解决资源文件的编码问题 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <!-- 过滤后缀文件 -->
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
+            <nonFilteredFileExtension>xls</nonFilteredFileExtension>
+            <nonFilteredFileExtension>p12</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
+      <!-- 打包source文件为zip文件 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
+
+
   </build>
 
 </project>

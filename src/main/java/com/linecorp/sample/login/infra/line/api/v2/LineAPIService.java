@@ -85,14 +85,26 @@ public class LineAPIService {
         try {
             DecodedJWT jwt = JWT.decode(id_token);
             return new IdToken(
+                    // 签发者
                     jwt.getClaim("iss").asString(),
+                    // 用户ID
                     jwt.getClaim("sub").asString(),
+                    // 客户端ID
                     jwt.getClaim("aud").asString(),
+                    // 过期时间
                     jwt.getClaim("ext").asLong(),
+                    // 有效期
                     jwt.getClaim("iat").asLong(),
+                    // 随机数
                     jwt.getClaim("nonce").asString(),
+                    // 名字
                     jwt.getClaim("name").asString(),
-                    jwt.getClaim("picture").asString());
+                    // 头像
+                    jwt.getClaim("picture").asString(),
+                    // openId
+                    jwt.getClaim("openId").asString(),
+                    // 邮箱
+                    jwt.getClaim("email").asString());
         } catch (JWTDecodeException e) {
             throw new RuntimeException(e);
         }

@@ -16,6 +16,7 @@
 package com.linecorp.sample.login.infra.http;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import okhttp3.OkHttpClient;
@@ -37,9 +38,22 @@ public final class Client {
             final Class<T> service,
             final Function<T, Call<R>> function){
 
+        String proxyHost = "127.0.0.1";
+        String proxyPort = "10809";
+
+        System.setProperty("http.proxyHost", proxyHost);
+        System.setProperty("http.proxyPort", proxyPort);
+
+        // 对https也开启代理
+        System.setProperty("https.proxyHost", proxyHost);
+        System.setProperty("https.proxyPort", proxyPort);
+
+
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor)
+                .connectTimeout(180, TimeUnit.SECONDS).build(); // 设置连接超时时间
+//                .readTimeout(60, TimeUnit.SECONDS).build();    // 设置读取超时时间
 
         Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(url)

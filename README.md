@@ -5,6 +5,10 @@ This is a starter application to help you get started on integrating [LINE Login
 
 The following instructions describe how to deploy the app on Heroku, view logs, and modify the app for yourself.
 
+## 使用方式
+- 修改application.yml和Client代理
+- 启动Application
+
 ## Requirements
 
 - A LINE Login channel with the "WEB" app type. To create a channel, go to [Creating a Channel](https://developers.line.me/web-api/channel-registration) on the LINE Developers site.
